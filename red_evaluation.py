@@ -9,10 +9,12 @@ from statistics import mean, stdev
 from CybORG import CybORG, CYBORG_VERSION
 from CybORG.Agents import B_lineAgent, SleepAgent
 from CybORG.Agents.SimpleAgents.Meander import RedMeanderAgent
+from CybORG.Agents.Wrappers.TrueTableWrapper import true_obs_to_table
 from Wrappers.ChallengeWrapper2 import ChallengeWrapper2
 from Agents.WrappedAgent import WrappedBlueAgent
 from Agents.MainAgent import MainAgent
 from Agents.RedAgent import RedPPOAgent
+
 import random, os
 
 MAX_EPS = 1000
@@ -28,6 +30,7 @@ if __name__ == "__main__":
     cyborg_version = CYBORG_VERSION
     scenario = 'Scenario2'
     # commit_hash = get_git_revision_hash()
+    num_steps = 30
     
     # change checkpoint directory
     folder = 'redppo2'
@@ -38,7 +41,6 @@ if __name__ == "__main__":
     # Load scenario
     path = str(inspect.getfile(CybORG))
     path = path[:-10] + f'/Shared/Scenarios/{scenario}.yaml'
-    
 
     # Load blue agent
     blue_agent = WrappedBlueAgent
@@ -46,21 +48,30 @@ if __name__ == "__main__":
     # Set up environment with blue agent running in the background and 
     # red agent as the main agent
     cyborg = CybORG(path, 'sim', agents={'Blue': blue_agent})
+    cyborg.set_seed(153)
     env = ChallengeWrapper2(env=cyborg, agent_name="Red")
-    
-    red_agent = RedPPOAgent(env.observation_space.shape[0], ckpt= os.path.join(ckpt, 'optimal.pth'), restore =True)
-
-    num_steps = 30
+    env.set_seed(153)
+    red_agent = RedPPOAgent(env.observation_space.shape[0]+num_steps, ckpt= os.path.join(ckpt, 'optimal.pth'), restore = True)
     observation = env.reset()
 
     # action_space = wrapped_cyborg.get_action_space(agent_name)
-    action_space = env.get_action_space(agent_name)
+    # action_space = env.get_action_space(agent_name)
     total_reward = []
     actions = []
     for i in range(MAX_EPS):
         r = []
         a = []
         for j in range(num_steps):
+
+            # Create the time bit vector
+            time_vector = [0] * max_timesteps
+
+            # Set current timestep
+            time_vector[t] = 1
+
+            # Combine the observation vector with time vector
+            observation = np.concatenate((observation, time_vector))
+
             action = red_agent.get_action(observation)
             observation, rew, done, info = env.step(action)
             r.append(rew)

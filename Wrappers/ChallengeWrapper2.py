@@ -23,6 +23,8 @@ class ChallengeWrapper2(Env, BaseWrapper):
 
         self.env = env
         self.action_space = self.env.action_space
+
+
         self.observation_space = self.env.observation_space
         self.reward_threshold = reward_threshold
         self.max_steps = max_steps
@@ -64,6 +66,3 @@ class ChallengeWrapper2(Env, BaseWrapper):
 
     def get_reward_breakdown(self, agent: str):
         return self.get_attr('get_reward_breakdown')(agent)
-
-
-

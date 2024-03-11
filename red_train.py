@@ -2,8 +2,10 @@
 # This script is used to evaluate the performance of a red agent against a blue agent
 # The blue agent is https://github.com/john-cardiff/-cyborg-cage-2.git
 # Modified by Prof. H. Sasahara
+
 import inspect
 import time
+import numpy as np
 
 from CybORG import CybORG, CYBORG_VERSION
 from CybORG.Agents import B_lineAgent, SleepAgent
@@ -24,6 +26,16 @@ def wrap(env):
     return ChallengeWrapper2(env=env, agent_name=agent_name)
 
 if __name__ == "__main__":
+    print_interval = 50
+    save_interval = 200
+    max_episodes = 100000
+    optimal_check = 1000
+    max_timesteps = 30
+    # 200 episodes for buffer
+    update_timestep = 20000
+    running_reward, time_step = 0, 0
+    set_of_actions = []
+
     cyborg_version = CYBORG_VERSION
     scenario = 'Scenario2'
     
@@ -39,30 +51,29 @@ if __name__ == "__main__":
 
     # Load blue agent
     blue_agent = WrappedBlueAgent
-    # Set up environment with blue agent running in the background and 
-    # red agent as the main agent
+    # Set up environment with blue agent running in the background and red agent as main agent
     cyborg = CybORG(path, 'sim', agents={'Blue': blue_agent})
-
+    cyborg.set_seed(153)
     env = ChallengeWrapper2(env=cyborg, agent_name="Red")
-    # print(env.get_action_space("Red"))
-    print(os.path.join(ckpt, '2600.pth'))
-    # Change restore to False if you want to start training from scratch
-    red_agent = RedPPOAgent(env.observation_space.shape[0], ckpt= os.path.join(ckpt, 'optimal.pth'), restore =False)
+    env.set_seed(153)
 
+    red_agent = RedPPOAgent(env.observation_space.shape[0]+max_timesteps, ckpt= os.path.join(ckpt, 'optimal.pth'), restore =False)
 
-    print_interval = 50
-    save_interval = 200
-    max_episodes = 100000
-    max_timesteps = 30
-    # 200 episodes for buffer
-    update_timestep = 20000
-    running_reward, time_step = 0, 0
-    set_of_actions = []
     for i_episode in range(1, max_episodes + 1):
         state = env.reset()
         set_of_actions.clear()
         for t in range(max_timesteps):
             time_step += 1
+
+            # Create the time bit vector
+            time_vector = [0] * max_timesteps
+
+            # Set current timestep
+            time_vector[t] = 1
+
+            # Combine the observation vector with time vector
+            state = np.concatenate((state, time_vector))
+
             action = red_agent.get_action(state)
             set_of_actions.append(action)
             
@@ -71,37 +82,18 @@ if __name__ == "__main__":
             except:
                 print("Current Time Step: {}\n{}".format(t, set_of_actions))
                 raise "Error"
-            red_agent.store(reward, done)
 
+            red_agent.store(reward, done)
             if time_step % update_timestep == 0:
                 red_agent.train()
                 red_agent.clear_memory()
                 time_step = 0
-
             running_reward += reward
-
 
         if i_episode % save_interval == 0:
             torch.save(red_agent.policy.state_dict(), os.path.join(ckpt, 'optimal.pth'))
-            print('Checkpoint saved')
 
         if i_episode % print_interval == 0:
             running_reward = float((running_reward / print_interval))
             print('Episode {} \t Avg reward: {}'.format(i_episode, running_reward))
             running_reward = 0
-            
-    # max_episodes = 1
-    # max_timesteps = 30
-    # total_rew = []
-    # for i_episode in range(1, max_episodes + 1):
-    #     observation = env.reset()
-    #     time_step = 0
-    #     action_space = env.get_action_space('Red')
-    #     total_rew.clear()
-    #     for t in range(max_timesteps):
-    #         time_step += 1
-    #         action =  red_agent.get_action(observation) 
-    #         observation, reward, done, _ = env.step(action)
-    #         total_rew.append(reward)
-
-    # print("Total Rewards: " + str(sum(total_rew)))
