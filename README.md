@@ -41,6 +41,21 @@ To demonstrate this implementation we have added a new agent that performs the r
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+
+### Changes to CybORG
+ 
+We performed the following Changes to CybORG to make our implementation work.
+* Adding error checking to PrivilegeEscalation.py to avoid a "Key Error"  when trying to access host operating system types:
+<img src='/CSE233_Cage2_Project/images/PrivilegeEscalation_Change.PNG' width=60%>
+* "Add Error that occured"
+<img src='/CSE233_Cage2_Project/images/RedTableWrapper_Change.PNG' width=60%>
+* Changing the reward amount for an invalid action performed by the red agent, prior to this change the red agent was awarded a positive reward when 
+it should be a negative reward.
+<img src='/CSE233_Cage2_Project/images/BaseWrapper_Change.PNG' width=60%>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
 <!-- CONTACT -->
 ## Team Members
 
