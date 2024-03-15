@@ -36,7 +36,7 @@ Since the current state of CybORG did not support a Red Agent adversary changes 
 To demonstrate this implementation we have added a new agent that performs the recommended initial sleep cycles at the start of an episode and then follows with performing the actions from a BlineAgent. The code for this can be found in red_evaluation_static.py and LateStartAgent.py. This Agent produces an average reward of 190 over 100 episodes. To demonstrate this run the below command in the top directory of the repository:
 * Step 1:
    ```sh
-   python3 /cse_233_project/CSE233_Cage2_Project# python3 red_evaluation_static.py
+   python3 /cse_233_project/CSE233_Cage2_Project/red_evaluation_static.py
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
