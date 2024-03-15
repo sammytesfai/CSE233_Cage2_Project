@@ -1,9 +1,10 @@
+<a name="readme-top"></a>
 <br />
 <div align="center">
-<h3 align="center">CSE 233 CybORG Project</h3>
+<h3 align="center">CSE 233 Project</h3>
 
   <p align="center">
-    Training Red Adversarial Agent to comprise Network using Cage 2
+    Training Red Adversarial Agent to Comprise Cage 2 Network
   </p>
 </div>
 
@@ -11,9 +12,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
+The project involves training a reinforcement learning agent to act as an attacker in a simulated network environment. Using a modified version of the CybORG environment, groups develop a red agent to compromise an Operational Server while a blue agent defends it. Key tasks include modifying agent functions and training processes, with performance evaluated based on rewards gained in the simulation.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -45,10 +44,10 @@ To demonstrate this implementation we have added a new agent that performs the r
 <!-- CONTACT -->
 ## Team Members
 
-Jimmy Franknedy
-Neel Apte
-Gavin Cooke
-Sammy Tesfai
+* Jimmy Franknedy
+* Neel Apte
+* Gavin Cooke
+* Sammy Tesfai
 
 
 <!-- ACKNOWLEDGMENTS -->
