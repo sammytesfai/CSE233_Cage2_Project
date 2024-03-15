@@ -21,7 +21,7 @@ The project involves training a reinforcement learning agent to act as an attack
 <!-- GETTING STARTED -->
 ## Getting Started
 
-There are two solution we provide of a Red Agent compromising the Cage 2 Network. The First Agent uses a PPO algorithm based on <a href=https://github.com/john-cardiff/-cyborg-cage-2>John Cardiff's</a> solution, which is based on a blue agent defending. This implementation required some minor changes to decoys and decoys states to work for a red agent. "Gavin insert quick description of Static Red agent"</a>
+There are two solutions we provide of a Red Agent compromising the Cage 2 Network. The First Agent uses a PPO algorithm based on <a href=https://github.com/john-cardiff/-cyborg-cage-2>John Cardiff's</a> solution, which is based on a blue agent defending. This implementation required some minor changes to decoys and decoys states to work for a red agent. The Second Agent uses a hard coded strategy which exploits the behavior of the given blue agent. By waiting at least two timesteps before attacking, the defense is tricked into believing there is no threat and the red agent is able to attack the network freely. This attack is implemented by copying the moves of the Bline agent, but it can be set to copy Meander as well.</a>
 
 ### PPO Red Agent Approach
 
