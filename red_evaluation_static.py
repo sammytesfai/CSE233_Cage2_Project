@@ -13,12 +13,16 @@ from Wrappers.ChallengeWrapper2 import ChallengeWrapper2
 from Agents.WrappedAgent import WrappedBlueAgent
 from Agents.MainAgent import MainAgent
 from Agents.RedAgent import RedAgent
+from Agents.LateStartAgent import LateStartAgent
 import random
 
-MAX_EPS = 1
+MAX_EPS = 100
 agent_name = 'Red'
 random.seed(153)
 
+# Set this to either RedMeanderAgent() or B_lineAgent()
+#chosen_agent = RedMeanderAgent()
+chosen_agent = B_lineAgent()
 
 # changed to ChallengeWrapper2
 def wrap(env):
@@ -38,16 +42,18 @@ if __name__ == "__main__":
 
     # Load blue agent
     blue_agent = WrappedBlueAgent
-    red_agent = B_lineAgent()
+    # Load hard coded red agent
+    red_agent = LateStartAgent(chosen_agent)
+
     # Set up environment with blue agent running in the background and 
     # red agent as the main agent
     cyborg = CybORG(path, 'sim', agents={'Blue': blue_agent})
     
     num_steps = 30
+    total_reward = []
     for i in range(MAX_EPS):
         observation = cyborg.reset().observation
         action_space = cyborg.get_action_space(agent_name)
-        total_reward = []
         actions = []
         r = []
         a = []
@@ -59,8 +65,13 @@ if __name__ == "__main__":
             done = result.done  
             r.append(rew)
             a.append((str(cyborg.get_last_action('Blue')), str(cyborg.get_last_action('Red'))))
+        
         total_reward.append(sum(r))
         actions.append(a)
 
-
-            
+        # Need to do this to reset the Red Agent for the next episode.
+        # Not sure if Blue Agent gets reset because the reward for my RedAgent() skyrockets after the first test.
+        red_agent.end_episode()
+    
+    # Print average reward
+    print(sum(total_reward) / len(total_reward))

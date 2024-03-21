@@ -1,7 +1,7 @@
 # copied from https://github.com/geekyutao/PyTorch-PPO/blob/master/PPO_discrete.py
 # only changes involve keeping track of decoys, adding scanning states, and reduction of action space
 
-from PPO.ActorCritic import ActorCritic
+from PPO.ActorCritic import RedActorCritic
 from PPO.Memory import Memory
 from CybORG.Agents import BaseAgent
 import torch
@@ -15,22 +15,9 @@ class RedPPOAgent(BaseAgent):
     def __init__(self, input_dims, action_space=[], lr=0.002, betas=[0.9, 0.990], gamma=0.99, 
                  K_epochs=6, eps_clip=0.2, restore=False, ckpt=None,):
         super().__init__()
-
-        # Safe action space - no errors when ran
-        action_space = [i for i in range(758)]
-        action_space += [i for i in range(771, 784)]
-
-        # Entire action set for red agent
-        action_space = [0]                              # Sleep
-        action_space += [1, 2, 3]                       # Discover Remote Services
-        action_space += [i for i in range(4,17)]        # Discover Network Services
-        action_space += [i for i in range(17,30)]       # Exploit Remote Service
-        action_space += [i for i in range(758,771)]     # Privilege Escalate
-        action_space += [i for i in range(771,784)]     # Impact
-
-        # Optimized action set for given seed
-        # action_space = [0,3,13,26,767,6,19,760,1,7,26,761,11,24,765,778]
-
+        # action_space = [i for i in range(758)]
+        # action_space += [i for i in range(771, 784)]
+        action_space = [i for i in range(888)]
         self.action_space = action_space
         self.lr = lr
         self.betas = betas
@@ -38,8 +25,7 @@ class RedPPOAgent(BaseAgent):
         self.eps_clip = eps_clip
         self.K_epochs = K_epochs
         self.memory = Memory() 
-        self.policy = ActorCritic(input_dims, len(self.action_space)).to(device)
-        self.start_actions = [0,0,0]
+        self.policy = RedActorCritic(input_dims, len(action_space)).to(device)
         
         if restore:
             pretained_model = torch.load(ckpt, map_location=lambda storage, loc: storage)
@@ -48,9 +34,13 @@ class RedPPOAgent(BaseAgent):
         self.optimizer = torch.optim.Adam(self.policy.parameters(), lr=lr, betas=betas)
 
         # old policy: initialize old policy with current policy's parameter
-        self.old_policy = ActorCritic(input_dims, len(self.action_space)).to(device)
+        self.old_policy = RedActorCritic(input_dims, len(action_space)).to(device)
         self.old_policy.load_state_dict(self.policy.state_dict())
-        self.MSE_loss = nn.MSELoss()
+
+        self.MSE_loss = nn.MSELoss()	# to calculate critic loss
+
+    def end_episode(self):
+        self.start_actions = self.start
 
     def store(self, reward, done):
         self.memory.rewards.append(reward)
@@ -60,7 +50,7 @@ class RedPPOAgent(BaseAgent):
         self.memory.clear_memory()
 
     def get_action(self, observation, deterministic=False):
-        state = torch.FloatTensor(observation.reshape(1, -1)).to(device)  
+        state = torch.FloatTensor(observation.reshape(1, -1)).to(device)  # flatten the state
         action = self.old_policy.act(state, self.memory, deterministic=deterministic)
         return self.action_space[action]
 
@@ -72,6 +62,7 @@ class RedPPOAgent(BaseAgent):
                 discounted_reward = 0
             discounted_reward = reward + self.gamma * discounted_reward
             rewards.insert(0, discounted_reward)
+
         rewards = torch.tensor(rewards).to(device)
         if len(rewards) > 1:
             rewards = (rewards - rewards.mean()) / (rewards.std() + 1e-5)
@@ -80,7 +71,6 @@ class RedPPOAgent(BaseAgent):
         old_actions = torch.squeeze(torch.stack(self.memory.actions).to(device)).detach()
         old_logprobs = torch.squeeze(torch.stack(self.memory.logprobs)).to(device).detach()
         for _ in range(self.K_epochs):
-
             logprobs, state_values, dist_entropy = self.policy.evaluate(old_states, old_actions)
 
             ratios = torch.exp(logprobs - old_logprobs.detach())
@@ -94,7 +84,9 @@ class RedPPOAgent(BaseAgent):
             critic_loss = 0.5 * self.MSE_loss(rewards, state_values) - 0.01 * dist_entropy
 
             loss = actor_loss + critic_loss
+
             self.optimizer.zero_grad()
             loss.mean().backward()
             self.optimizer.step()
+
         self.old_policy.load_state_dict(self.policy.state_dict())
