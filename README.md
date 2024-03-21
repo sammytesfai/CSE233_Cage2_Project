@@ -64,7 +64,7 @@ We performed the following Changes to CybORG to make our implementation work.
 * Adding error checking to PrivilegeEscalation.py to avoid a "Key Error"  when trying to access host operating system types:
 <img src='images/PrivilegeEscalation_Change.PNG' width=100%>
 
-* "Add Error that occured"
+* Also associated with PrivilegeEscalation Key Error.
 <img src='images/RedTableWrapper_Change.PNG' width=100%>
 
 * Changing the reward amount for an invalid action performed by the red agent, prior to this change the red agent was awarded a positive reward when 
