@@ -16,7 +16,7 @@ from Agents.RedAgent import RedAgent
 from Agents.LateStartAgent import LateStartAgent
 import random
 
-MAX_EPS = 500
+MAX_EPS = 100
 agent_name = 'Red'
 random.seed(153)
 

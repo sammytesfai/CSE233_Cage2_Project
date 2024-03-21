@@ -71,9 +71,9 @@ if __name__ == "__main__":
         actions.append(a)
         observation = env.reset()
 
-    for a in actions:
-        for b in a:
-            print(b)
-        print("")
+    # for a in actions:
+    #     for b in a:
+    #         print(b)
+    #     print("")
 
     print("Average Total Rewards: {}".format(sum(total_reward)/len(total_reward)))
