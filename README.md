@@ -26,9 +26,21 @@ There are two solutions we provide of a Red Agent compromising the Cage 2 Networ
 ### PPO Red Agent Approach
 
 Since the current state of CybORG did not support a Red Agent adversary changes needed to be made to CybORG for error checking and rewards. Due to this we have created a docker image that contains these CybORG changes as well as our red agent implementation. To download the docker image follow the below steps:
-* Step 1:
+* Step 1 (8GB image due to CybORG environment and dependencies, may take a while to download):
   ```sh
-  Instructions to downloading and running docker image
+  docker pull sammyt24/cse233_project_container:v1.0
+  ```
+* Step 2 *:
+  ```sh
+  docker run -it sammyt24/cse233_project_container:v1.0
+  ```
+* Step 3:
+  ```sh
+  cd /cse_233_project/CSE233_Cage2_Project/
+  ```
+* Step 4 (Should produce a reward score of ~28):
+  ```sh
+  python3 red_evaluation.py
   ```
 
 ### Static Sleep/BlineAgent
@@ -36,7 +48,11 @@ Since the current state of CybORG did not support a Red Agent adversary changes 
 To demonstrate this implementation we have added a new agent that performs the recommended initial sleep cycles at the start of an episode and then follows with performing the actions from a BlineAgent. The code for this can be found in red_evaluation_static.py and LateStartAgent.py. This Agent produces an average reward of 190 over 100 episodes. To demonstrate this run the below command in the top directory of the repository:
 * Step 1:
    ```sh
-   python3 /cse_233_project/CSE233_Cage2_Project/red_evaluation_static.py
+   cd /cse_233_project/CSE233_Cage2_Project/
+   ```
+* Step 2 (Should produce a reward score of ~190):
+   ```sh
+   python3 red_evaluation_static.py
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -70,8 +86,6 @@ it should be a negative reward.
 <!-- ACKNOWLEDGMENTS -->
 ## References
 
-* []()
-* []()
-* []()
+* https://github.com/john-cardiff/-cyborg-cage-2/tree/main/Agents
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
