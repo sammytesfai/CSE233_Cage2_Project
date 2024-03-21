@@ -15,7 +15,7 @@ from Agents.MainAgent import MainAgent
 from Agents.RedAgent import RedPPOAgent
 import random, os
 
-MAX_EPS = 1
+MAX_EPS = 100
 agent_name = 'Red'
 random.seed(153)
 
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     cyborg = CybORG(path, 'sim', agents={'Blue': blue_agent})
     env = ChallengeWrapper2(env=cyborg, agent_name="Red")
     
-    red_agent = RedPPOAgent(env.observation_space.shape[0], ckpt= os.path.join(ckpt, 'modified_invalid_reward.pth'), restore =True)
+    red_agent = RedPPOAgent(env.observation_space.shape[0], ckpt= os.path.join(ckpt, 'modified_invalid_reward2.pth'), restore =True)
 
     num_steps = 30
     observation = env.reset()

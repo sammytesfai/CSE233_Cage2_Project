@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
     env = ChallengeWrapper2(env=cyborg, agent_name="Red")
     # Change restore to False if you want to start training from scratch
-    red_agent = RedPPOAgent(env.observation_space.shape[0], ckpt= os.path.join(ckpt, 'modified_invalid_reward.pth'), restore =True)
+    red_agent = RedPPOAgent(env.observation_space.shape[0], ckpt= os.path.join(ckpt, 'modified_invalid_reward2.pth'), restore =False)
 
 
     print_interval = 50
@@ -80,7 +80,7 @@ if __name__ == "__main__":
             running_reward += reward
 
         if i_episode % save_interval == 0:
-            torch.save(red_agent.policy.state_dict(), os.path.join(ckpt, 'modified_invalid_reward.pth'))
+            torch.save(red_agent.policy.state_dict(), os.path.join(ckpt, 'modified_invalid_reward2.pth'))
             print('Checkpoint saved')
 
         if i_episode % print_interval == 0:

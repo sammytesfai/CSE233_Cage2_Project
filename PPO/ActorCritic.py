@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 from torch.distributions import Categorical
 
-hidden_nodes = 64
+hidden_nodes = 256
 
 class RedActorCritic(nn.Module):
     def __init__(self, state_dim, action_dim):

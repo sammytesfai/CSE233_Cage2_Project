@@ -4,7 +4,7 @@
 <h3 align="center">CSE 233 Project</h3>
 
   <p align="center">
-    Training Red Adversarial Agent to Comprise Cage 2 Network
+    Training Red Adversarial Agent to Compromise Cage 2 Network
   </p>
 </div>
 
