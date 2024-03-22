@@ -30,7 +30,7 @@ Since the current state of CybORG did not support a Red Agent adversary changes 
   ```sh
   docker pull sammyt24/cse233_project_container:v1.0
   ```
-* Step 2 *:
+* Step 2:
   ```sh
   docker run -it sammyt24/cse233_project_container:v1.0
   ```
@@ -50,7 +50,7 @@ To demonstrate this implementation we have added a new agent that performs the r
    ```sh
    cd /cse_233_project/CSE233_Cage2_Project/
    ```
-* Step 2 (Should produce a reward score of ~190):
+* Step 2: Should produce a reward score of ~190:
    ```sh
    python3 red_evaluation_static.py
    ```
@@ -64,10 +64,10 @@ We performed the following Changes to CybORG to make our implementation work.
 * Adding error checking to PrivilegeEscalation.py to avoid a "Key Error"  when trying to access host operating system types:
 <img src='images/PrivilegeEscalation_Change.PNG' width=100%>
 
-* Also associated with PrivilegeEscalation Key Error.
+* Within RedTableWrapper.py added error checking to prevent PrivilegeEscalation Key Error.
 <img src='images/RedTableWrapper_Change.PNG' width=100%>
 
-* Changing the reward amount for an invalid action performed by the red agent, prior to this change the red agent was awarded a positive reward when 
+* Within BaseWrapper.py changed the reward amount for an invalid action performed by the red agent, prior to this change the red agent was awarded a positive reward when 
 it should be a negative reward.
 <img src='images/BaseWrapper_Change.PNG' width=100%>
 
